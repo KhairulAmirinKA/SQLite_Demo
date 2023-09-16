@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                CustomerModel customerModel;
 
                 try {
 
@@ -40,13 +41,23 @@ public class MainActivity extends AppCompatActivity {
                 boolean isChecked= switch_activeCustomer.isChecked();
 
 
-                    CustomerModel customerModel= new CustomerModel(id, name, age, isChecked );
+                     customerModel= new CustomerModel(id, name, age, isChecked );
 
                     Toast.makeText(MainActivity.this, customerModel.toString(), Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
                     Toast.makeText(MainActivity.this, "error creating customer", Toast.LENGTH_SHORT).show();
+
+                    //for tracking the error
+                    customerModel=new CustomerModel(-1, "error", 0, false);
                 }
+
+                //DB
+                DatabaseHelper databaseHelper= new DatabaseHelper(MainActivity.this);
+
+                boolean isAdded_toDB = databaseHelper.addOne(customerModel);
+
+                Toast.makeText(MainActivity.this, "added to the db? "+ isAdded_toDB, Toast.LENGTH_SHORT).show();
 
             }
         });
