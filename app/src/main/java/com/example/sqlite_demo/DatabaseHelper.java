@@ -2,11 +2,15 @@ package com.example.sqlite_demo;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -67,6 +71,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return true;
 
-
     }
+
+    //to retrieve data from db
+    public List<CustomerModel> retrieveData(){
+
+        List<CustomerModel> list= new ArrayList<>();
+
+        //get data from db
+        String queryString= "SELECT * FROM "+ CUSTOMER_TABLE;
+
+        //improve performance than getWritableDatabase()
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(queryString, null);
+        //cursor is the result set from a SQL statement
+
+        if (cursor.moveToFirst() ){ //returns true if there were items selected
+
+            //TODO: loop through the result set and create a customer object and put them into the list
+            do{
+                int customerID= cursor.getInt(0); //0 is the position
+
+                String customerName= cursor.getString(1);
+
+                int customerAge= cursor.getInt(2);
+
+                //SQlite: 1 is true, 0 is false.
+                boolean customerActive= cursor.getInt(3)==1 ? true : false;
+
+                CustomerModel newCustomer = new CustomerModel(customerID, customerName, customerAge, customerActive);
+
+                //ad to the list
+                list.add(newCustomer);
+
+            }
+            while (cursor.moveToNext() );
+        }
+
+        //close cursor and db when done
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+
+
+
+
 }

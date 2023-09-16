@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText editTxtName, editTxtAge;
@@ -66,7 +68,13 @@ public class MainActivity extends AppCompatActivity {
         btnViewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "View all", Toast.LENGTH_SHORT).show();
+
+                DatabaseHelper databaseHelper = new DatabaseHelper(MainActivity.this);
+
+                //get all data
+                List<CustomerModel> allData = databaseHelper.retrieveData();
+
+                Toast.makeText(MainActivity.this, allData.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
